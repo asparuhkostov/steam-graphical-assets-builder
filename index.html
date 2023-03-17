@@ -1,0 +1,126 @@
+<html>
+    <head>
+        <script src="./lib/jsuites.js"></script>
+        <link rel="stylesheet" href="./lib/jsuites.css" type="text/css" />
+        <script src="./lib/cropper.min.js"></script>
+        <link rel="stylesheet" href="./lib/cropper.min.css" type="text/css" />
+        <style>
+            body{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        </style>
+    </head>
+
+    <body>
+        <img src="assets/rain_logo.png" style="width: 400px;"/>
+    </body>
+
+    <script>
+        const sizes = [
+            {
+                label: "Header Capsule",
+                area: [ 500, 500 ],
+                crop: [ 460, 215 ]
+            },
+            {
+                label: "Small Capsule",
+                area: [ 500, 500 ],
+                crop: [ 231, 87 ]
+            },
+            {
+                label: "Main Capsule",
+                area: [ 750, 750 ],
+                crop: [ 616, 353 ]
+            },
+            {
+                label: "Vertical Capsule",
+                area: [ 500, 500 ],
+                crop: [ 374, 448 ]
+            },
+            {
+                label: "Page Background",
+                area: [ 1500, 1500 ],
+                crop: [ 1438, 810 ]
+            },
+            {
+                label: "Community Small Capsule",
+                area: [ 500, 500 ],
+                crop: [ 184, 69 ]
+            },
+            {
+                label: "Library Capsule	",
+                area: [ 1000, 1000 ],
+                crop: [ 600, 900 ]
+            },
+            {
+                label: "Library Hero",
+                area: [ 4100, 1500 ],
+                crop: [ 4000, 1240 ]
+            },
+            {
+                label: "Library Logo",
+                area: [ 1500, 1500 ],
+                crop: [ 1280, 720 ]
+            },
+            {
+                label: "Event Cover",
+                area: [ 1000, 1000 ],
+                crop: [ 800, 450 ]
+            }
+        ]
+
+        for(let s = 0; s < sizes.length; s++){
+            const sizeCropperId = `cropper_${s}`;
+            const workingAreaWidth = sizes[s].area[0]
+            const width = sizes[s].crop[0];
+            const height = sizes[s].crop[1];
+
+            // create a container for the size cropper
+            const sizeCropperContainer = document.createElement("div");
+            sizeCropperContainer.setAttribute("id", sizeCropperId + "_container");
+            sizeCropperContainer.setAttribute("style", `display: flex; flex-direction: column; align-items: center; margin-bottom: 10px; padding:10px; border: 1px solid black; width: ${workingAreaWidth}px;`)
+            document.body.appendChild(sizeCropperContainer);
+
+            // add a label stating the size of the asset
+            const sizeCropperLabel = document.createElement("h2")
+            const sizeCropperLabelTextContent = 
+                document.createTextNode(sizes[s].label)
+            sizeCropperLabel.appendChild(sizeCropperLabelTextContent);
+            sizeCropperContainer.appendChild(sizeCropperLabel);
+
+            // add the actual image cropper
+            const sizeCropper = document.createElement("div");
+            sizeCropper.setAttribute("id", sizeCropperId)
+            sizeCropperContainer.appendChild(sizeCropper)
+            cropper(document.getElementById(sizeCropperId), {...sizes[s]})
+
+            // add the resized image element
+            const resizedImgContainerId = sizeCropperId + "_result";
+            const resizedImageContainer = document.createElement("div");
+            resizedImageContainer.setAttribute("id", resizedImgContainerId)
+            const resizedImg = document.createElement("img")
+            resizedImg.setAttribute("style", `width:${width}px; height:${height}px; margin: 5px;`)
+            resizedImageContainer.appendChild(resizedImg)
+            sizeCropperContainer.appendChild(resizedImageContainer)
+
+            // add the button for downloading the image
+            const imageGetterId = sizeCropperId + "image_getter"
+            const getCroppedImageButton = document.createElement("button")
+            const getCroppedImageButtonTextContent = 
+                document.createTextNode(`crop`)
+                getCroppedImageButton.appendChild(getCroppedImageButtonTextContent);
+            getCroppedImageButton.setAttribute("value", "crop")
+            getCroppedImageButton.setAttribute("id", imageGetterId)
+            getCroppedImageButton.setAttribute("style", "width: 50px;")
+            sizeCropperContainer.appendChild(getCroppedImageButton)
+
+            // functionality for clicking on the resizing button
+            document.getElementById(imageGetterId).onclick = function() {
+                document.getElementById(resizedImgContainerId).children[0].src =
+                    document.getElementById(sizeCropperId).crop.getCroppedImage().src;
+            }
+        }
+    </script>
+</html>
